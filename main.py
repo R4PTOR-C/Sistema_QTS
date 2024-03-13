@@ -1,13 +1,13 @@
 import tkinter as tk
 from tkinter import ttk
 from ttkthemes import ThemedTk
+from db import get_all_alunos
 
 def submit_form():
-    # Substitua isso pelo seu código real que lida com a submissão do formulário
     print("Formulário enviado")
 
 root = ThemedTk()
-root.title("Formulário de Inscrição")
+root.title("Formulário de Inscrição ")
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 root.geometry(f"{screen_width}x{screen_height}+0+0")
@@ -36,6 +36,14 @@ label_cpf = ttk.Label(root, text="CPF:")
 label_cpf.grid(row=4, column=0, sticky="ew", padx=10, pady=(0, 10))
 entry_cpf = ttk.Entry(root)
 entry_cpf.grid(row=5, column=0, sticky="ew", padx=10, pady=(0, 10))
+
+label_cursos = ttk.Label(root, text="Cursos:")
+label_cursos.grid(row=6, column=0, sticky="ew", padx=10, pady=(0, 10))
+combobox = ttk.Combobox(root)
+combobox['values'] = ("Engenharia de Software", "Ciencia da Computação", "Direito")
+combobox.current(0)
+combobox.grid(row=7, column=0, sticky="ew",padx=10, pady=(0, 10))
+
 
 submit_btn = ttk.Button(root, text="Enviar", command=submit_form)
 submit_btn.grid(row=20, column=0, columnspan=2, sticky="ew", padx=10, pady=20)
