@@ -1,51 +1,35 @@
 import tkinter as tk
 from tkinter import ttk
-from ttkthemes import ThemedTk
-from db import get_all_alunos
+from index import IndexPage
+from new import NewPage
 
-def submit_form():
-    print("Formulário enviado")
+class MainApp(tk.Tk):
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
+        self.title("Sistema CRUD com Tkinter e PostgreSQL")
+        self.geometry("800x600")
 
-root = ThemedTk()
-root.title("Formulário de Inscrição ")
-screen_width = root.winfo_screenwidth()
-screen_height = root.winfo_screenheight()
-root.geometry(f"{screen_width}x{screen_height}+0+0")
-root.minsize(500, 300)
+        container = ttk.Frame(self)
+        container.pack(side="top", fill="both", expand=True)
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
 
-# Configura a janela para ser responsiva
-for i in range(30):  # Corrigido para 4 linhas de widgets reais
-    root.grid_rowconfigure(i, weight=1)
-root.grid_columnconfigure(0, weight=1)
+        self.frames = {}
+        for F in (IndexPage, NewPage):
+            page_name = F.__name__
+            frame = F(parent=container, controller=self)
+            self.frames[page_name] = frame
+            frame.grid(row=0, column=0, sticky="nsew")
 
-style = ttk.Style(root)
-style.theme_use('breeze')
+        self.show_frame("IndexPage")
 
-# Corrige a sobreposição colocando cada widget em sua própria linha
-label_name = ttk.Label(root, text="Nome:")
-label_name.grid(row=0, column=0, sticky="ew", padx=10, pady=(0, 10))
-entry_name = ttk.Entry(root)
-entry_name.grid(row=1, column=0, sticky="ew", padx=10, pady=(0, 10))
+    def show_frame(self, page_name):
+        '''Mostra um frame para o usuário'''
+        frame = self.frames[page_name]
+        frame.tkraise()
+        if page_name == "IndexPage":
+            frame.update_table()  # Atualiza a tabela ao exibir a IndexPage
 
-label_matricula = ttk.Label(root, text="Matricula:")
-label_matricula.grid(row=2, column=0, sticky="ew", padx=10, pady=(0, 10))
-entry_matricula = ttk.Entry(root)
-entry_matricula.grid(row=3, column=0, sticky="ew", padx=10, pady=(0, 10))
-
-label_cpf = ttk.Label(root, text="CPF:")
-label_cpf.grid(row=4, column=0, sticky="ew", padx=10, pady=(0, 10))
-entry_cpf = ttk.Entry(root)
-entry_cpf.grid(row=5, column=0, sticky="ew", padx=10, pady=(0, 10))
-
-label_cursos = ttk.Label(root, text="Cursos:")
-label_cursos.grid(row=6, column=0, sticky="ew", padx=10, pady=(0, 10))
-combobox = ttk.Combobox(root)
-combobox['values'] = ("Engenharia de Software", "Ciencia da Computação", "Direito")
-combobox.current(0)
-combobox.grid(row=7, column=0, sticky="ew",padx=10, pady=(0, 10))
-
-
-submit_btn = ttk.Button(root, text="Enviar", command=submit_form)
-submit_btn.grid(row=20, column=0, columnspan=2, sticky="ew", padx=10, pady=20)
-
-root.mainloop()
+if __name__ == "__main__":
+    app = MainApp()
+    app.mainloop()
